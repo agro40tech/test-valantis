@@ -1,0 +1,25 @@
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid white;
+  padding: 10px;
+  width: 350px;
+  height: 150px;
+}
+
+.article__id {
+  color: red;
+}
+
+.article__name {
+  color: green;
+}
+
+.article__price {
+  color: yellow;
+}
+
+.article__brand {
+  color: blue;
+}
