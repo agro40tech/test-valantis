@@ -7,6 +7,7 @@ import { getIdsCards } from "../../api/getIdsCards";
 import { setDataCards, setDataIds } from "../../model/cardsSlice";
 import { getItemsCards } from "../../api/getItemsCards";
 import { typeCard } from "../../model/type";
+import { deleteDuplicateObj } from "../../lib/utils/deleteDuplicateObj";
 
 export const CardList: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -16,13 +17,20 @@ export const CardList: FC = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getIdsCards().then((res) => {
-      dispath(setDataIds(res as string[]));
 
-      getItemsCards(res as string[])
+    // Запрашиваем id карточек
+    getIdsCards().then((res) => {
+      dispath(setDataIds(res));
+
+      // Запрашиваем по id карточек массив объектов карточек
+      getItemsCards(res)
         .then((res) => {
-          dispath(setDataCards(res as typeCard[]));
+          // Чистим массив от дупликатов
+          const clearDuplicateArrObj: typeCard[] = deleteDuplicateObj(res);
+
+          dispath(setDataCards(clearDuplicateArrObj));
         })
+        // Снимаем загрузку
         .finally(() => {
           setIsLoading(false);
         });

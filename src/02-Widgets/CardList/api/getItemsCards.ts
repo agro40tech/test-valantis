@@ -1,7 +1,8 @@
 import { instance } from "05-Shared/api";
+import { typeCard } from "../model/type";
 
 export const getItemsCards = async (ids: string[]) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<typeCard[]>((resolve, reject) => {
     instance
       .post("/", {
         action: "get_items",
