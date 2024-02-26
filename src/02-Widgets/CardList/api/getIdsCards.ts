@@ -1,6 +1,6 @@
 import { instance } from "05-Shared/api";
 
-export const getIdsCards = async () => {
+export const getIdsCards = () => {
   return new Promise<string[]>((resolve, reject) => {
     instance
       .post("/", {

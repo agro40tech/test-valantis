@@ -1,7 +1,7 @@
 import { instance } from "05-Shared/api";
 import { typeCard } from "../model/type";
 
-export const getItemsCards = async (ids: string[]) => {
+export const getItemsCards = (ids: string[]) => {
   return new Promise<typeCard[]>((resolve, reject) => {
     instance
       .post("/", {

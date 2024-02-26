@@ -11,31 +11,80 @@ import { deleteDuplicateObj } from "../../lib/utils/deleteDuplicateObj";
 
 export const CardList: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [idsRes, setIdsRes] = useState<string[]>([]);
 
   const cards = useAppSelector((state) => state.cards.cards);
   const dispath = useAppDispatch();
 
+  // Запрос ids карточек
   useEffect(() => {
     setIsLoading(true);
 
-    // Запрашиваем id карточек
-    getIdsCards().then((res) => {
-      dispath(setDataIds(res));
+    getIdsCards()
+      // Получили ответ
+      .then((res) => {
+        setIdsRes(res);
+        dispath(setDataIds(res));
+      })
+      // Если не получили делаем новый запрос
+      .catch((err) => {
+        console.log(err);
+        console.log("Повторный запрос id карточек");
 
-      // Запрашиваем по id карточек массив объектов карточек
-      getItemsCards(res)
+        getIdsCards()
+          // Получили ответ
+          .then((res) => {
+            setIdsRes(res);
+            dispath(setDataIds(res));
+          })
+          // Если не получили сбрасываем ошибку
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+  }, []);
+
+  // Запрос карточек
+  useEffect(() => {
+    // Проверяем получили ли id карточек
+    if (idsRes.length > 0) {
+      getItemsCards(idsRes)
+        // Получили ответ
         .then((res) => {
           // Чистим массив от дупликатов
           const clearDuplicateArrObj: typeCard[] = deleteDuplicateObj(res);
 
           dispath(setDataCards(clearDuplicateArrObj));
         })
-        // Снимаем загрузку
+        // Если не получили делаем новый запрос
+        .catch((err) => {
+          console.log(err);
+          console.log("Повторный запрос карточек");
+
+          getItemsCards(idsRes)
+            // Получили ответ
+            .then((res) => {
+              // Чистим массив от дупликатов
+              const clearDuplicateArrObj: typeCard[] = deleteDuplicateObj(res);
+
+              dispath(setDataCards(clearDuplicateArrObj));
+              setIsLoading(false);
+            })
+            // Если не получили сбрасываем ошибку
+            .catch((err) => {
+              console.log(err);
+            })
+            // Завершаем загрузку
+            .finally(() => {
+              setIsLoading(false);
+            });
+        })
+        // Завершаем загрузку
         .finally(() => {
           setIsLoading(false);
         });
-    });
-  }, []);
+    }
+  }, [idsRes]);
 
   return isLoading ? (
     <span>Идет загрузка...</span>
