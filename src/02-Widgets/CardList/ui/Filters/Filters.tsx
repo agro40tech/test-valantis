@@ -59,7 +59,6 @@ export const Filters: FC = () => {
       // Получили ответ
       .then((res) => {
         dispath(setDataIds(res));
-        console.log(res);
       })
       // Если не получили ответ делаем повторный запрос
       .catch((err) => {

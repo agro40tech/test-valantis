@@ -86,10 +86,9 @@ export const CardList: FC = () => {
     }
   }, [idsRes]);
 
-  return isLoading ? (
-    <span>Идет загрузка...</span>
-  ) : (
+  return (
     <>
+      {isLoading && <span className="card__loader">идет загрузка...</span>}
       <Filters />
       <ul className="card-list">
         {cards.length > 0 &&
