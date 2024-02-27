@@ -8,11 +8,12 @@ import { setDataCards, setDataIds } from "../../model/cardsSlice";
 import { getItemsCards } from "../../api/getItemsCards";
 import { typeCard } from "../../model/type";
 import { deleteDuplicateObj } from "../../lib/utils/deleteDuplicateObj";
+import { Filters } from "../Filters/Filters";
 
 export const CardList: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [idsRes, setIdsRes] = useState<string[]>([]);
 
+  const idsRes = useAppSelector((state) => state.cards.cardsIds);
   const cards = useAppSelector((state) => state.cards.cards);
   const dispath = useAppDispatch();
 
@@ -23,7 +24,6 @@ export const CardList: FC = () => {
     getIdsCards()
       // Получили ответ
       .then((res) => {
-        setIdsRes(res);
         dispath(setDataIds(res));
       })
       // Если не получили делаем новый запрос
@@ -34,7 +34,6 @@ export const CardList: FC = () => {
         getIdsCards()
           // Получили ответ
           .then((res) => {
-            setIdsRes(res);
             dispath(setDataIds(res));
           })
           // Если не получили сбрасываем ошибку
@@ -48,6 +47,8 @@ export const CardList: FC = () => {
   useEffect(() => {
     // Проверяем получили ли id карточек
     if (idsRes.length > 0) {
+      setIsLoading(true);
+
       getItemsCards(idsRes)
         // Получили ответ
         .then((res) => {
@@ -68,7 +69,6 @@ export const CardList: FC = () => {
               const clearDuplicateArrObj: typeCard[] = deleteDuplicateObj(res);
 
               dispath(setDataCards(clearDuplicateArrObj));
-              setIsLoading(false);
             })
             // Если не получили сбрасываем ошибку
             .catch((err) => {
@@ -89,15 +89,23 @@ export const CardList: FC = () => {
   return isLoading ? (
     <span>Идет загрузка...</span>
   ) : (
-    <ul className="card-list">
-      {cards.length > 0 &&
-        cards.map((card, index) => {
-          return (
-            <li className="card-item" key={index}>
-              <CardProduct id={card.id} name={card.product} price={card.price} brand={card.brand} />
-            </li>
-          );
-        })}
-    </ul>
+    <>
+      <Filters />
+      <ul className="card-list">
+        {cards.length > 0 &&
+          cards.map((card, index) => {
+            return (
+              <li className="card-item" key={index}>
+                <CardProduct
+                  id={card.id}
+                  name={card.product}
+                  price={card.price}
+                  brand={card.brand}
+                />
+              </li>
+            );
+          })}
+      </ul>
+    </>
   );
 };

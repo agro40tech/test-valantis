@@ -24,3 +24,7 @@ body {
 ul {
   list-style: none;
 }
+
+fieldset {
+  border: 1px solid white;
+}
