@@ -88,23 +88,28 @@ export const CardList: FC = () => {
 
   return (
     <>
-      {isLoading && <span className="card__loader">идет загрузка...</span>}
-      <Filters />
-      <ul className="card-list">
-        {cards.length > 0 &&
-          cards.map((card, index) => {
-            return (
-              <li className="card-item" key={index}>
-                <CardProduct
-                  id={card.id}
-                  name={card.product}
-                  price={card.price}
-                  brand={card.brand}
-                />
-              </li>
-            );
-          })}
-      </ul>
+      {isLoading ? (
+        <span>идет загрузка...</span>
+      ) : (
+        <>
+          <Filters />
+          <ul className="card-list">
+            {cards.length > 0 &&
+              cards.map((card, index) => {
+                return (
+                  <li className="card-item" key={index}>
+                    <CardProduct
+                      id={card.id}
+                      name={card.product}
+                      price={card.price}
+                      brand={card.brand}
+                    />
+                  </li>
+                );
+              })}
+          </ul>
+        </>
+      )}
     </>
   );
 };
