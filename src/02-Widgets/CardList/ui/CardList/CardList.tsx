@@ -9,9 +9,11 @@ import { getItemsCards } from "../../api/getItemsCards";
 import { typeCard } from "../../model/type";
 import { deleteDuplicateObj } from "../../lib/utils/deleteDuplicateObj";
 import { Filters } from "../Filters/Filters";
+import { Pagination } from "../Pagination/Pagination";
 
 export const CardList: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [offset, setOffset] = useState<number>(0);
 
   const idsRes = useAppSelector((state) => state.cards.cardsIds);
   const cards = useAppSelector((state) => state.cards.cards);
@@ -21,7 +23,7 @@ export const CardList: FC = () => {
   useEffect(() => {
     setIsLoading(true);
 
-    getIdsCards()
+    getIdsCards(offset)
       // Получили ответ
       .then((res) => {
         dispath(setDataIds(res));
@@ -31,7 +33,7 @@ export const CardList: FC = () => {
         console.log(err);
         console.log("Повторный запрос id карточек");
 
-        getIdsCards()
+        getIdsCards(offset)
           // Получили ответ
           .then((res) => {
             dispath(setDataIds(res));
@@ -41,7 +43,7 @@ export const CardList: FC = () => {
             console.log(err);
           });
       });
-  }, []);
+  }, [offset]);
 
   // Запрос карточек
   useEffect(() => {
@@ -92,7 +94,8 @@ export const CardList: FC = () => {
         <span>идет загрузка...</span>
       ) : (
         <>
-          <Filters />
+          <Filters offset={offset} />
+          <Pagination offset={offset} setOffset={setOffset} />
           <ul className="card-list">
             {cards.length > 0 &&
               cards.map((card, index) => {

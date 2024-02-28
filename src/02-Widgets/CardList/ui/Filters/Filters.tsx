@@ -6,7 +6,11 @@ import { apiFilter } from "../../api/apiFilter";
 import { useAppDispatch } from "00-App/store";
 import { setDataIds } from "../../model/cardsSlice";
 
-export const Filters: FC = () => {
+type typeProps = {
+  offset: number;
+};
+
+export const Filters: FC<typeProps> = ({ offset }) => {
   const [fields, setFields] = useState<(string | null)[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>("");
 
@@ -18,7 +22,7 @@ export const Filters: FC = () => {
 
   // Запрос полей брендов
   useEffect(() => {
-    getFields()
+    getFields(offset)
       // Получили ответ
       .then((res) => {
         setFields(res);
@@ -28,7 +32,7 @@ export const Filters: FC = () => {
         console.log(err);
         console.log("Повторный запрос полей брендов");
 
-        getFields()
+        getFields(offset)
           // Получили ответ
           .then((res) => {
             setFields(res);
