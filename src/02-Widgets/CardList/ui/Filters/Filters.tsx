@@ -62,7 +62,8 @@ export const Filters: FC<typeProps> = ({ offset }) => {
     apiFilter(filterObj)
       // Получили ответ
       .then((res) => {
-        dispath(setDataIds(res));
+        setIdsRes(res);
+        setOffsetFilter(0);
       })
       // Если не получили ответ делаем повторный запрос
       .catch((err) => {
@@ -72,7 +73,8 @@ export const Filters: FC<typeProps> = ({ offset }) => {
         apiFilter(filterObj)
           // Получили ответ
           .then((res) => {
-            dispath(setDataIds(res));
+            setIdsRes(res);
+            setOffsetFilter(0);
           })
           // Если не получили ответ сбрасываем ошибку
           .catch((err) => {

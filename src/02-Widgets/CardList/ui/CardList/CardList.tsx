@@ -14,6 +14,7 @@ import { Pagination } from "../Pagination/Pagination";
 export const CardList: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [offset, setOffset] = useState<number>(0);
+  const [offsetFilter, setOffsetFilter] = useState<number>(0);
 
   const idsRes = useAppSelector((state) => state.cards.cardsIds);
   const cards = useAppSelector((state) => state.cards.cards);
@@ -87,6 +88,20 @@ export const CardList: FC = () => {
         });
     }
   }, [idsRes]);
+
+  const paginationFilter = (res: string[]) => {
+    let result: string[] = [];
+
+    for (let i = 0 + offsetFilter; i < res.length; i++) {
+      if (i < offsetFilter + 50) {
+        result.push(res[i]);
+      } else {
+        break;
+      }
+    }
+
+    return result;
+  };
 
   return (
     <>
